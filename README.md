@@ -1,0 +1,3 @@
+Automating Heisenberg Hamiltonian exchange tensor derivation via group theory
+
+...
