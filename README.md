@@ -106,11 +106,8 @@ Full details are in Section III of `Final report.pdf`.
 
 - spglib returns rotation matrices in fractional coordinates, and these are not yet converted to Cartesian before being applied to J. This doesn't affect orthogonal cells (cubic, tetragonal, orthorhombic), but the Mn5Ge3 results (hexagonal) should be rechecked once this is fixed.
 - Some bond point groups could not be identified by spglib. This may be related to the issue above.
-- Possible extensions: magnetic space groups and time-reversal symmetry, a stricter treatment of superexchange paths through non-magnetic atoms, and using the orbit–stabilizer theorem to spot inequivalent bonds within a shell.
+- Possible extensions: magnetic space groups and time-reversal symmetry, and using the orbit–stabilizer theorem to spot inequivalent bonds within a shell.
 
-## Acknowledgements
-
-Thanks to Dr Joseph Barker for help and guidance throughout the project. The symmetry operation class was written by Dr Barker (private communication) and is used with permission.
 
 ## Licence
 
