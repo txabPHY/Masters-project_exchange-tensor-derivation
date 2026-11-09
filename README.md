@@ -34,6 +34,7 @@ Neumann's principle states that a physical property must respect the symmetries 
 |------|-------------|
 | `exchange_tensor_derivation.ipynb` | Main notebook containing all functions |
 | `Final report.pdf` | Full project report with theory, method and results |
+| `Y3Fe5O12.cif` | YIG crystal structure from the Materials Project, used in the example |
 | `LICENSE` | MIT licence |
 
 ## Requirements
@@ -65,6 +66,9 @@ run_code_supercell("path/to/structure.cif", scale=3, skip_elements=[32])
 
 # Tensors for all bonds within the first conventional cell, for comparison with figures and tables in the literature
 run_code_all_conventional_cell_bonds("path/to/structure.cif")
+
+# Tensors for one shell of bonds around a single atom (used for the YIG example below)
+run_code_single_shell("path/to/structure.cif", centre_position=[0.25, 0.25, 0.25], element=26, distance=5.44)
 ```
 
 Main options:
@@ -75,23 +79,44 @@ Main options:
 - `radius_mode`, `radius_factor`: how the neighbour cut-off radius is chosen
 - `do_seperate_tensor_for_each_bond`, `do_first_tensor_for_bond_then_others_from_same_atom`, `do_seperate_tensor_for_bonds_checks_other_atoms`: choose how tensors are generated for the bonds in a shell
 - `plotting`: turn plots on or off
+- `centre_position`, `element`, `distance` (for `run_code_single_shell`): fractional position of the central atom, atomic number of the magnetic atoms, and bond length of the shell in Å
 
 Note: `run_code_unit_cell` has `skip_elements = [9]` (fluorine) hard-coded from the MnF2 calculations. Change this for other materials.
 
 ## Example: third-nearest-neighbour bonds in YIG (Y3Fe5O12)
 
-Earlier models of YIG assumed all third-nearest-neighbour Fe–Fe bonds (5.44 Å) share the same exchange parameter. Using the space group of the full lattice, the algorithm finds that no symmetry operation maps the body-diagonal bonds onto the other corner-to-centre bonds, so they are symmetry distinct:
+Earlier models of YIG assumed all third-nearest-neighbour Fe–Fe bonds (5.44 Å) share the same exchange parameter. Using the space group of the full lattice, the algorithm finds that no symmetry operation maps the body-diagonal bonds onto the other corner-to-centre bonds, so they are symmetry distinct.
+
+To reproduce, run all cells in the notebook. The last cell runs:
+
+```python
+yig_results = run_code_single_shell("Y3Fe5O12.cif", centre_position=[0.25, 0.25, 0.25], element=26, distance=5.44)
+```
+
+This takes the Fe at the centre of the first octant, (1/4, 1/4, 1/4), and its eight Fe neighbours at 5.44 Å:
 
 | Bond | Point group | Allowed components |
 |------|-------------|--------------------|
-| J3b (body diagonal) | 32 | 3, no DMI |
+| J3b (body diagonal) | 32 | 3, DMI only along the bond |
 | J3a (other corner-to-centre bonds) | 2 | 6, DMI allowed |
 
+Output (two of the eight bonds shown; the other bonds have the same form in rotated axes):
+
 ```
-[paste the output from your run here]
+Central atom (element 26) at [0.25 0.25 0.25]: 8 bonds at 5.44 Å
+
+Bond vector [0.25 0.25 0.25]:  point group 32,  3 independent components
+⎡J_zz  J_zx  J_zy⎤
+⎢J_zy  J_zz  J_zx⎥
+⎣J_zx  J_zy  J_zz⎦
+
+Bond vector [ 0.25 -0.25  0.25]:  point group 2,  6 independent components
+⎡J_yy  J_xy  -J_zy⎤
+⎢J_yx  J_yy  -J_zx⎥
+⎣J_zx  J_zy   J_zz⎦
 ```
 
-Note: two sentences in the report (just before Table II, and in the orbit–stabilizer discussion) swap the J3a and J3b labels. Table II and Eqs. 72–73 are correct.
+Note: some sentences in the report's YIG discussion swap the J3a and J3b labels, and the statement that D3b vanishes is incorrect. Table II and Eqs. 72–73 are correct.
 
 ## Results
 
@@ -106,9 +131,16 @@ Full details are in Section III of `Final report.pdf`.
 
 - spglib returns rotation matrices in fractional coordinates, and these are not yet converted to Cartesian before being applied to J. This doesn't affect orthogonal cells (cubic, tetragonal, orthorhombic), but the Mn5Ge3 results (hexagonal) should be rechecked once this is fixed.
 - Some bond point groups could not be identified by spglib. This may be related to the issue above.
+- A rounding error in `reduce_to_unit_cell` could drop symmetry operations when the central atom has a fractional coordinate of 0. This has been fixed in the current notebook.
 - Possible extensions: magnetic space groups and time-reversal symmetry, and using the orbit–stabilizer theorem to spot inequivalent bonds within a shell.
 
 
+## Acknowledgements
+
+Thanks to Dr Joseph Barker for help and guidance throughout the project.
+
+The YIG structure file is from the Materials Project (CC BY 4.0).
+
 ## Licence
 
-MIT.
+MIT. See `LICENSE`.
