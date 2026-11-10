@@ -81,8 +81,6 @@ Main options:
 - `plotting`: turn plots on or off
 - `centre_position`, `element`, `distance` (for `run_code_single_shell`): fractional position of the central atom, atomic number of the magnetic atoms, and bond length of the shell in Å
 
-Note: `run_code_unit_cell` has `skip_elements = [9]` (fluorine) hard-coded from the MnF2 calculations. Change this for other materials.
-
 ## Example: third-nearest-neighbour bonds in YIG (Y3Fe5O12)
 
 Earlier models of YIG assumed all third-nearest-neighbour Fe–Fe bonds (5.44 Å) share the same exchange parameter. Using the space group of the full lattice, the algorithm finds that no symmetry operation maps the body-diagonal bonds onto the other corner-to-centre bonds, so they are symmetry distinct.
